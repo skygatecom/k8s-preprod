@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata: gitops-prod-operator
+  name: gitops-prod-operator
+  namespace: prod
+spec:
+  schedule: "*/2 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          serviceAccountName: gitops
+          containers:
+            - name: gitops-operator
+              image: sandervanvugt/gittools
+              volumeMounts:
+                - mountPath: /prod
+                  name: prod
+              command: [sh, -e, -c]
+              args:
+                - find /prod -name '*.yaml' -exec kubectl apply -f {} \; 
+          volumes:
+            - name: prod
+              hostPath:
+                path: /prod
