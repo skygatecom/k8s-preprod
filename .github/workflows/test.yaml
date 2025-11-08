@@ -1,0 +1,18 @@
+name: Test GitHub Actions Workflow
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  test-workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Configure AWS Credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v4.1.0
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+      - name: Test AWS Credentials
+        run: aws sts get-caller-identity
