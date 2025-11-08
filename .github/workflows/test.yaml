@@ -1,6 +1,6 @@
 name: Test GitHub Actions Workflow
 on:
-  pull_request:
+  push:
     branches:
       - main
 jobs:
